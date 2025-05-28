@@ -40,7 +40,7 @@ class _VehicleListingScreenState extends State<VehicleListingScreen> {
       ),
       body: FutureBuilder<List<Car>>(
         future: futureVehicles,
-        builder: (context, snapshot) {
+        builder: (context, AsyncSnapshot<List<Car>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -68,7 +68,18 @@ class _VehicleListingScreenState extends State<VehicleListingScreen> {
           final cars = snapshot.data ?? [];
           if (cars.isEmpty) {
             return const Center(
-              child: Text('No vehicles available'),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.directions_car_outlined,
+                      size: 64, color: Colors.grey),
+                  SizedBox(height: 16),
+                  Text(
+                    'No vehicles available',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                ],
+              ),
             );
           }
 

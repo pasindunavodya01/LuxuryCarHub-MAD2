@@ -12,6 +12,7 @@ class ApiService {
     validateStatus: (status) => status! < 500,
   ));
 
+  // Fetch all vehicles
   static Future<List<Car>> fetchVehicles() async {
     try {
       final response = await _dio.get('/vehicles');
@@ -38,6 +39,7 @@ class ApiService {
     }
   }
 
+  // Fetch all dealers
   static Future<List<Dealer>> fetchDealers() async {
     try {
       final response = await _dio.get('/dealers');
@@ -61,6 +63,70 @@ class ApiService {
       print('Unexpected error: $e');
       print('Stack trace: $stackTrace');
       rethrow;
+    }
+  }
+
+  // Login user
+  static Future<Map<String, dynamic>> login(
+      String email, String password) async {
+    try {
+      final response = await _dio.post('/login', data: {
+        'email': email,
+        'password': password,
+      });
+
+      if (response.statusCode == 200) {
+        // Success - return the data (e.g., token and user info)
+        return {'success': true, 'data': response.data};
+      } else {
+        // Login failed, return message from API or generic
+        return {
+          'success': false,
+          'message': response.data['message'] ?? 'Login failed'
+        };
+      }
+    } on DioException catch (e) {
+      return {
+        'success': false,
+        'message': e.response?.data['message'] ?? e.message
+      };
+    }
+  }
+
+  // Register new user
+  static Future<Map<String, dynamic>> register(
+    String name,
+    String email,
+    String password,
+    String phone,
+    String role,
+  ) async {
+    try {
+      final response = await _dio.post('/register', data: {
+        'name': name,
+        'email': email,
+        'password': password,
+        'phone_number': phone,
+        'role': role,
+      });
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return {
+          'success': true,
+          'message': 'Registration successful',
+        };
+      } else {
+        return {
+          'success': false,
+          'message': response.data['message'] ?? 'Registration failed',
+        };
+      }
+    } on DioException catch (e) {
+      print('Registration Error: ${e.message}');
+      return {
+        'success': false,
+        'message': e.response?.data['message'] ?? 'Registration failed',
+      };
     }
   }
 }
