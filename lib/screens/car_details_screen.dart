@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/car.dart';
 
-class CarDetailsScreen extends StatelessWidget {
+class CarDetailsScreen extends StatefulWidget {
   final Car car;
 
   const CarDetailsScreen({
@@ -10,7 +10,25 @@ class CarDetailsScreen extends StatelessWidget {
   });
 
   @override
+  _CarDetailsScreenState createState() => _CarDetailsScreenState();
+}
+
+class _CarDetailsScreenState extends State<CarDetailsScreen> {
+  bool _isDescriptionExpanded = false;
+
+  @override
   Widget build(BuildContext context) {
+    final car = widget.car;
+    final description = car.description ?? '';
+    final isLongDescription = description.length > 150; // Customize length
+
+    String displayDescription;
+    if (!_isDescriptionExpanded && isLongDescription) {
+      displayDescription = description.substring(0, 150) + '...';
+    } else {
+      displayDescription = description;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('${car.make ?? 'Unknown'} ${car.model ?? ''}'),
@@ -89,6 +107,45 @@ class CarDetailsScreen extends StatelessWidget {
                       label: 'Fuel Type',
                       value: car.fuel!,
                     ),
+
+                  const SizedBox(height: 24),
+
+                  // Description Section with expandable text
+                  if (description.isNotEmpty) ...[
+                    const Text(
+                      'Description',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      displayDescription,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        height: 1.5,
+                      ),
+                    ),
+                    if (isLongDescription)
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isDescriptionExpanded = !_isDescriptionExpanded;
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Text(
+                            _isDescriptionExpanded ? 'Show less' : 'Read more',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ],
               ),
             ),

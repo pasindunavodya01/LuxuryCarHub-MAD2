@@ -1,4 +1,3 @@
-
 class Car {
   final String? id;
   final String? make;
@@ -7,6 +6,7 @@ class Car {
   final double price;
   final String? fuel;
   final String? images;
+  final String? description;
 
   Car({
     this.id,
@@ -16,6 +16,7 @@ class Car {
     required this.price,
     this.fuel,
     this.images,
+    this.description,
   });
 
   factory Car.fromJson(Map<String, dynamic> json) {
@@ -27,6 +28,7 @@ class Car {
       price: double.tryParse(json['price']?.toString() ?? '0') ?? 0,
       fuel: json['fuel']?.toString(),
       images: json['images']?.toString(),
+      description: json['description']?.toString(),
     );
   }
 
