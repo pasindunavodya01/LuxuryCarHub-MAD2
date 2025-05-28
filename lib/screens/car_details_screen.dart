@@ -24,7 +24,7 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
 
     String displayDescription;
     if (!_isDescriptionExpanded && isLongDescription) {
-      displayDescription = description.substring(0, 150) + '...';
+      displayDescription = '${description.substring(0, 150)}...';
     } else {
       displayDescription = description;
     }
