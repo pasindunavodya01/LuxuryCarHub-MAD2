@@ -15,28 +15,43 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   String? _errorMessage;
 
-  void _login() async {
+  Future<void> _login() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
 
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
+    try {
+      final result = await ApiService.login(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
 
-    final result = await ApiService.login(email, password);
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
 
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (result['success']) {
-      // Login success - you can save token, navigate, etc.
-      Navigator.pushReplacementNamed(context, '/home'); // example navigation
-    } else {
-      setState(() {
-        _errorMessage = result['message'];
-      });
+        if (result['success']) {
+          Navigator.pushReplacementNamed(context, '/profile');
+        } else {
+          setState(() {
+            _errorMessage = result['message'];
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'An error occurred during login';
+        });
+      }
+      print('Login error: $e');
     }
   }
 
@@ -61,10 +76,14 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (_errorMessage != null) ...[
-                Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
-                const SizedBox(height: 8),
-              ],
+              if (_errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    _errorMessage!,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(
@@ -98,14 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
               _isLoading
                   ? const CircularProgressIndicator()
                   : ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _login();
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
+                      onPressed: _login,
                       child: const Text('Login'),
                     ),
               const SizedBox(height: 16),

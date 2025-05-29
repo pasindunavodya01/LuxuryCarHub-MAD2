@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
+import 'screens/profile_screen.dart';
 
 void main() {
   runApp(const LuxuryCarHubApp());
@@ -21,6 +22,7 @@ class LuxuryCarHubApp extends StatelessWidget {
         '/': (context) => const HomeScreen(),
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
+        '/profile': (context) => const ProfileScreen(),
       },
     );
   }

@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_application_1/models/dealer.dart';
 import '../models/car.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class ApiService {
   static const String baseUrl =
@@ -70,25 +72,63 @@ class ApiService {
   static Future<Map<String, dynamic>> login(
       String email, String password) async {
     try {
+      print('Attempting login for email: $email');
       final response = await _dio.post('/login', data: {
         'email': email,
         'password': password,
       });
 
+      print('Login response status: ${response.statusCode}');
+      print('Login response data: ${response.data}');
+
       if (response.statusCode == 200) {
-        // Success - return the data (e.g., token and user info)
-        return {'success': true, 'data': response.data};
+        final userData = response.data['user'];
+        final token = response
+            .data['access_token']; // Changed from 'token' to 'access_token'
+
+        if (userData != null && token != null) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('user_data', json.encode(userData));
+          await prefs.setString('token', token);
+
+          // Set the authorization header for future requests
+          _dio.options.headers['Authorization'] = 'Bearer $token';
+
+          print('Login successful. Token stored.');
+          return {
+            'success': true,
+            'data': response.data,
+            'message': 'Login successful',
+          };
+        } else {
+          print('Login failed: Missing user data or token in response');
+          return {
+            'success': false,
+            'message': 'Invalid server response',
+          };
+        }
       } else {
-        // Login failed, return message from API or generic
+        print('Login failed with status: ${response.statusCode}');
         return {
           'success': false,
-          'message': response.data['message'] ?? 'Login failed'
+          'message': response.data['message'] ?? 'Login failed',
         };
       }
     } on DioException catch (e) {
+      print('Dio Error during login: ${e.message}');
+      print('Error type: ${e.type}');
+      if (e.response != null) {
+        print('Error response data: ${e.response?.data}');
+      }
       return {
         'success': false,
-        'message': e.response?.data['message'] ?? e.message
+        'message': e.response?.data['message'] ?? 'Network error occurred',
+      };
+    } catch (e) {
+      print('Unexpected error during login: $e');
+      return {
+        'success': false,
+        'message': 'An unexpected error occurred',
       };
     }
   }
