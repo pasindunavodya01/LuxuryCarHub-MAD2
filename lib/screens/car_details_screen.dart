@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/car.dart';
 
 class CarDetailsScreen extends StatefulWidget {
@@ -31,125 +32,143 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${car.make ?? 'Unknown'} ${car.model ?? ''}'),
+        title:
+            Text('${widget.car.make ?? 'Unknown'} ${widget.car.model ?? ''}'),
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.grey[800]
+            : Colors.white,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Car Image
-            AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Image.network(
-                car.imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: Colors.grey[200],
-                    child: const Icon(
-                      Icons.directions_car,
-                      size: 64,
-                      color: Colors.grey,
-                    ),
-                  );
-                },
+      body: Theme(
+        data: Theme.of(context).copyWith(
+          textTheme: GoogleFonts.robotoTextTheme(Theme.of(context).textTheme),
+          cardTheme: CardThemeData(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.grey[800]
+                : Colors.white,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Car Image
+              AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Image.network(
+                  car.imageUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey[200],
+                      child: const Icon(
+                        Icons.directions_car,
+                        size: 64,
+                        color: Colors.grey,
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
 
-            // Car Details
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Price and Year
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Rs. ${car.price.toStringAsFixed(2)}',
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                      ),
-                      Text(
-                        car.year ?? 'N/A',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Specifications
-                  const Text(
-                    'Specifications',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+              // Car Details
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Price and Year
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Rs. ${car.price.toStringAsFixed(2)}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                        ),
+                        Text(
+                          car.year ?? 'N/A',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  SpecificationItem(
-                    icon: Icons.calendar_today,
-                    label: 'Year',
-                    value: car.year ?? 'N/A',
-                  ),
-                  SpecificationItem(
-                    icon: Icons.directions_car,
-                    label: 'Make & Model',
-                    value: '${car.make ?? 'Unknown'} ${car.model ?? ''}',
-                  ),
-                  if (car.fuel != null)
-                    SpecificationItem(
-                      icon: Icons.local_gas_station,
-                      label: 'Fuel Type',
-                      value: car.fuel!,
-                    ),
+                    const SizedBox(height: 16),
 
-                  const SizedBox(height: 24),
-
-                  // Description Section with expandable text
-                  if (description.isNotEmpty) ...[
+                    // Specifications
                     const Text(
-                      'Description',
+                      'Specifications',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      displayDescription,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        height: 1.5,
-                      ),
+                    SpecificationItem(
+                      icon: Icons.calendar_today,
+                      label: 'Year',
+                      value: car.year ?? 'N/A',
                     ),
-                    if (isLongDescription)
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _isDescriptionExpanded = !_isDescriptionExpanded;
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 4.0),
-                          child: Text(
-                            _isDescriptionExpanded ? 'Show less' : 'Read more',
-                            style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontWeight: FontWeight.bold,
+                    SpecificationItem(
+                      icon: Icons.directions_car,
+                      label: 'Make & Model',
+                      value: '${car.make ?? 'Unknown'} ${car.model ?? ''}',
+                    ),
+                    if (car.fuel != null)
+                      SpecificationItem(
+                        icon: Icons.local_gas_station,
+                        label: 'Fuel Type',
+                        value: car.fuel!,
+                      ),
+
+                    const SizedBox(height: 24),
+
+                    // Description Section with expandable text
+                    if (description.isNotEmpty) ...[
+                      const Text(
+                        'Description',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        displayDescription,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          height: 1.5,
+                        ),
+                      ),
+                      if (isLongDescription)
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isDescriptionExpanded = !_isDescriptionExpanded;
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Text(
+                              _isDescriptionExpanded
+                                  ? 'Show less'
+                                  : 'Read more',
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: SafeArea(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../constants/colors.dart';
 import '../models/car.dart';
 import '../models/dealer.dart';
 import '../services/api_service.dart';
@@ -59,13 +61,9 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   Text(
                     'Featured Vehicles',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Colors.black,
-                    ),
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: AppColors.getTextColor(context),
+                        ),
                   ),
                   const SizedBox(height: 8),
                   Text(

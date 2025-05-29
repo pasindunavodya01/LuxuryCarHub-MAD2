@@ -51,6 +51,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
 
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -61,78 +64,165 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: CircleAvatar(
-                radius: 50,
-                backgroundColor: Theme.of(context).primaryColor,
-                child: Text(
-                  _userData?['name']?[0] ?? '?',
-                  style: const TextStyle(fontSize: 32, color: Colors.white),
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            _ProfileInfoCard(
-              title: 'Personal Information',
-              items: [
-                _ProfileItem(
-                  icon: Icons.person,
-                  label: 'Name',
-                  value: _userData?['name'] ?? 'N/A',
-                ),
-                _ProfileItem(
-                  icon: Icons.email,
-                  label: 'Email',
-                  value: _userData?['email'] ?? 'N/A',
-                ),
-                _ProfileItem(
-                  icon: Icons.phone,
-                  label: 'Phone',
-                  value: _userData?['phone_number'] ?? 'N/A',
-                ),
-                _ProfileItem(
-                  icon: Icons.badge,
-                  label: 'Role',
-                  value: _userData?['role']?.toUpperCase() ?? 'N/A',
-                ),
-              ],
-            ),
-            // Add Vehicle Button for Dealers
-            if (_userData?['role'] == 'dealer') ...[
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AddVehicleScreen(),
-                      ),
-                    ).then((added) {
-                      if (added == true) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Vehicle added successfully'),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: isLandscape
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Theme.of(context).primaryColor,
+                            child: Text(
+                              _userData?['name']?[0] ?? '?',
+                              style: const TextStyle(
+                                  fontSize: 32, color: Colors.white),
+                            ),
                           ),
-                        );
-                      }
-                    });
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add New Vehicle'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
+                          if (_userData?['role'] == 'dealer') ...[
+                            const SizedBox(height: 24),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AddVehicleScreen(),
+                                    ),
+                                  ).then((added) {
+                                    if (added == true) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Vehicle added successfully'),
+                                        ),
+                                      );
+                                    }
+                                  });
+                                },
+                                icon: const Icon(Icons.add),
+                                label: const Text('Add New Vehicle'),
+                                style: ElevatedButton.styleFrom(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 24),
+                    Expanded(
+                      flex: 2,
+                      child: _ProfileInfoCard(
+                        title: 'Personal Information',
+                        items: [
+                          _ProfileItem(
+                            icon: Icons.person,
+                            label: 'Name',
+                            value: _userData?['name'] ?? 'N/A',
+                          ),
+                          _ProfileItem(
+                            icon: Icons.email,
+                            label: 'Email',
+                            value: _userData?['email'] ?? 'N/A',
+                          ),
+                          _ProfileItem(
+                            icon: Icons.phone,
+                            label: 'Phone',
+                            value: _userData?['phone_number'] ?? 'N/A',
+                          ),
+                          _ProfileItem(
+                            icon: Icons.badge,
+                            label: 'Role',
+                            value: _userData?['role']?.toUpperCase() ?? 'N/A',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Theme.of(context).primaryColor,
+                        child: Text(
+                          _userData?['name']?[0] ?? '?',
+                          style: const TextStyle(
+                              fontSize: 32, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    _ProfileInfoCard(
+                      title: 'Personal Information',
+                      items: [
+                        _ProfileItem(
+                          icon: Icons.person,
+                          label: 'Name',
+                          value: _userData?['name'] ?? 'N/A',
+                        ),
+                        _ProfileItem(
+                          icon: Icons.email,
+                          label: 'Email',
+                          value: _userData?['email'] ?? 'N/A',
+                        ),
+                        _ProfileItem(
+                          icon: Icons.phone,
+                          label: 'Phone',
+                          value: _userData?['phone_number'] ?? 'N/A',
+                        ),
+                        _ProfileItem(
+                          icon: Icons.badge,
+                          label: 'Role',
+                          value: _userData?['role']?.toUpperCase() ?? 'N/A',
+                        ),
+                      ],
+                    ),
+                    // Add Vehicle Button for Dealers
+                    if (_userData?['role'] == 'dealer') ...[
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const AddVehicleScreen(),
+                              ),
+                            ).then((added) {
+                              if (added == true) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Vehicle added successfully'),
+                                  ),
+                                );
+                              }
+                            });
+                          },
+                          icon: const Icon(Icons.add),
+                          label: const Text('Add New Vehicle'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
-              ),
-            ],
-          ],
         ),
       ),
     );
