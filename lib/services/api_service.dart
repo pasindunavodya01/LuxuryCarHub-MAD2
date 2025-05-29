@@ -106,7 +106,7 @@ class ApiService {
         'name': name,
         'email': email,
         'password': password,
-        'phone_number': phone,
+        'phone': phone,
         'role': role,
       });
 
