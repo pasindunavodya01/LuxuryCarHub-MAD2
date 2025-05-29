@@ -155,7 +155,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Phone Number',
                   border: OutlineInputBorder(),
-                  prefixText: '+94 ',
+                  prefixText: ' ',
                 ),
                 keyboardType: TextInputType.phone,
                 validator: (value) {

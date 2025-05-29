@@ -15,20 +15,6 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).brightness == Brightness.dark
             ? Colors.grey[800]
             : Colors.white,
-        actions: [
-          TextButton.icon(
-            onPressed: () {
-              Navigator.pushNamed(context, '/login');
-            },
-            icon: const Icon(Icons.login),
-            label: const Text('Login'),
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.grey[800],
-            ),
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(

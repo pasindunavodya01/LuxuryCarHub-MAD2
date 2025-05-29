@@ -49,24 +49,17 @@ class ApiService {
       final response = await _dio.get('/dealers');
 
       if (response.statusCode == 200) {
-        final List jsonList = response.data;
-        return jsonList.map((json) => Dealer.fromJson(json)).toList();
+        final List dealersJson = response.data;
+        return dealersJson
+            .where((json) => json['role'] == 'dealer')
+            .map((json) => Dealer.fromJson(json))
+            .toList();
       } else {
-        print('API Error - Status Code: ${response.statusCode}');
-        print('Response data: ${response.data}');
-        throw Exception('Failed to load dealers: ${response.statusCode}');
+        throw Exception('Failed to load dealers');
       }
-    } on DioException catch (e) {
-      print('Dio Error: ${e.message}');
-      print('Error type: ${e.type}');
-      if (e.response != null) {
-        print('Error response: ${e.response?.data}');
-      }
-      throw Exception('Network error: ${e.message}');
-    } catch (e, stackTrace) {
-      print('Unexpected error: $e');
-      print('Stack trace: $stackTrace');
-      rethrow;
+    } catch (e) {
+      print('Error fetching dealers: $e');
+      throw Exception('Failed to load dealers');
     }
   }
 
