@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'addcar_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -99,6 +100,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
+            // Add Vehicle Button for Dealers
+            if (_userData?['role'] == 'dealer') ...[
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AddVehicleScreen(),
+                      ),
+                    ).then((added) {
+                      if (added == true) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Vehicle added successfully'),
+                          ),
+                        );
+                      }
+                    });
+                  },
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add New Vehicle'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),

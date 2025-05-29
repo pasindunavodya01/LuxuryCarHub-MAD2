@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:flutter_application_1/models/dealer.dart';
 import '../models/car.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -166,6 +168,63 @@ class ApiService {
       return {
         'success': false,
         'message': e.response?.data['message'] ?? 'Registration failed',
+      };
+    }
+  }
+
+  // Add a new vehicle
+  static Future<Map<String, dynamic>> addVehicle({
+    required String make,
+    required String model,
+    required int year,
+    required double price,
+    required String fuel,
+    required String description,
+    required File imageFile,
+    required String token,
+  }) async {
+    try {
+      final formData = FormData.fromMap({
+        'make': make,
+        'model': model,
+        'year': year.toString(),
+        'price': price.toString(),
+        'fuel': fuel,
+        'description': description,
+        'images': await MultipartFile.fromFile(
+          imageFile.path,
+          contentType: MediaType('image', 'jpeg'),
+        ),
+      });
+
+      final response = await _dio.post(
+        '/vehicles',
+        data: formData,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        return {
+          'success': true,
+          'message': 'Vehicle added successfully',
+          'data': response.data,
+        };
+      } else {
+        return {
+          'success': false,
+          'message': response.data['message'] ?? 'Failed to add vehicle',
+        };
+      }
+    } on DioException catch (e) {
+      print('Error adding vehicle: ${e.message}');
+      return {
+        'success': false,
+        'message': e.response?.data['message'] ?? 'Network error occurred',
       };
     }
   }
