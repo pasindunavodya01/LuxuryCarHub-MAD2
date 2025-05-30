@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api_service.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'success_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -39,7 +40,15 @@ class _LoginScreenState extends State<LoginScreen> {
         });
 
         if (result['success']) {
-          Navigator.pushReplacementNamed(context, '/main');
+          // Show success animation screen for 3 seconds, then go to main
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => SuccessScreen(
+                message: 'Login Successful!',
+                nextRoute: '/main',
+              ),
+            ),
+          );
         } else {
           setState(() {
             _errorMessage = result['message'];
