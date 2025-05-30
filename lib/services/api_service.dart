@@ -5,6 +5,7 @@ import 'package:flutter_application_1/models/dealer.dart';
 import '../models/car.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import '../models/dealer_location.dart';
 
 class ApiService {
   static const String baseUrl =
@@ -219,6 +220,40 @@ class ApiService {
         'success': false,
         'message': e.response?.data['message'] ?? 'Network error occurred',
       };
+    }
+  }
+
+  // Fetch dealer locations
+  static Future<List<DealerLocation>> fetchDealerLocations() async {
+    try {
+      final response = await _dio.get('/dealers/map');
+
+      if (response.statusCode == 200) {
+        // Check if response.data is Map or List
+        if (response.data is Map) {
+          // If it's a Map, check if it has a data field containing the list
+          final List<dynamic> locationsJson = response.data['dealers'] ?? [];
+          return locationsJson
+              .map((json) =>
+                  DealerLocation.fromJson(json as Map<String, dynamic>))
+              .toList();
+        } else if (response.data is List) {
+          // If it's already a List, use it directly
+          final List<dynamic> locationsJson = response.data;
+          return locationsJson
+              .map((json) =>
+                  DealerLocation.fromJson(json as Map<String, dynamic>))
+              .toList();
+        }
+        print('Unexpected response format: ${response.data}');
+        return [];
+      } else {
+        print('Error response: ${response.statusCode} - ${response.data}');
+        return [];
+      }
+    } catch (e) {
+      print('Error fetching dealer locations: $e');
+      return [];
     }
   }
 }
