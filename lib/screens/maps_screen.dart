@@ -19,6 +19,7 @@ class _MapsScreenState extends State<MapsScreen> {
   List<Marker> _markers = [];
   Position? _currentPosition;
   bool _isLoading = true;
+  bool _mapReady = false;
 
   @override
   void initState() {
@@ -52,7 +53,6 @@ class _MapsScreenState extends State<MapsScreen> {
 
       setState(() {
         _markers = [
-          // Current location marker
           if (_currentPosition != null)
             Marker(
               point: LatLng(
@@ -72,7 +72,6 @@ class _MapsScreenState extends State<MapsScreen> {
                 ),
               ),
             ),
-          // Dealer location markers
           ...dealers.map(
             (dealer) => Marker(
               point: LatLng(dealer.latitude, dealer.longitude),
@@ -129,7 +128,11 @@ class _MapsScreenState extends State<MapsScreen> {
         _isLoading = false;
       });
 
-      Future.delayed(const Duration(milliseconds: 100), _fitBounds);
+      if (_mapReady) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _fitBounds();
+        });
+      }
     } catch (e) {
       if (!mounted) return;
       print('Error loading dealers: $e');
@@ -201,16 +204,15 @@ class _MapsScreenState extends State<MapsScreen> {
 
     try {
       final url = Uri.parse(
-          'https://www.google.com/maps/dir/?api=1&origin=${_currentPosition!.latitude},${_currentPosition!.longitude}&destination=${dealer.latitude},${dealer.longitude}');
+        'https://www.google.com/maps/dir/?api=1&origin=${_currentPosition!.latitude},${_currentPosition!.longitude}&destination=${dealer.latitude},${dealer.longitude}',
+      );
 
       if (await canLaunchUrl(url)) {
         await launchUrl(url, mode: LaunchMode.externalApplication);
       } else {
-        // Fallback to OpenStreetMap if Google Maps fails
         final osmUrl = Uri.parse(
-            'https://www.openstreetmap.org/directions?engine=osrm_car&route=' +
-                '${_currentPosition!.latitude},${_currentPosition!.longitude};' +
-                '${dealer.latitude},${dealer.longitude}');
+          'https://www.openstreetmap.org/directions?engine=osrm_car&route=${_currentPosition!.latitude},${_currentPosition!.longitude};${dealer.latitude},${dealer.longitude}',
+        );
         if (await canLaunchUrl(osmUrl)) {
           await launchUrl(osmUrl, mode: LaunchMode.externalApplication);
         } else {
@@ -264,11 +266,14 @@ class _MapsScreenState extends State<MapsScreen> {
                 center: _currentPosition != null
                     ? LatLng(
                         _currentPosition!.latitude, _currentPosition!.longitude)
-                    : const LatLng(7.8731, 80.7718), // Sri Lanka center
-                zoom: 8.0, // Wider initial view
+                    : const LatLng(7.8731, 80.7718),
+                zoom: 8.0,
                 onMapReady: () {
+                  _mapReady = true;
                   if (_markers.isNotEmpty) {
-                    _fitBounds();
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _fitBounds();
+                    });
                   }
                 },
               ),
