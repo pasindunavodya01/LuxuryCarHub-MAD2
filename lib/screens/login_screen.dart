@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         if (result['success']) {
           // Show success animation screen for 3 seconds, then go to main
-          await Navigator.of(context).push(
+          await Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (_) => SuccessScreen(
                 message: 'Login Successful!',
