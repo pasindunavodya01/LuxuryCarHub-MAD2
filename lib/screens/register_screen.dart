@@ -198,19 +198,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ],
               ),
               const SizedBox(height: 24),
-              _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                      onPressed: () {
+              ElevatedButton(
+                onPressed: _isLoading
+                    ? null
+                    : () {
                         if (_formKey.currentState!.validate()) {
                           _register();
                         }
                       },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
-                      child: const Text('Register'),
-                    ),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: _isLoading
+                    ? Center(
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        ),
+                      )
+                    : const Text('Register'),
+              ),
             ],
           ),
         ),

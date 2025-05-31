@@ -152,12 +152,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                 ),
                 const SizedBox(height: 24),
-                _isLoading
-                    ? const CircularProgressIndicator()
-                    : ElevatedButton(
-                        onPressed: _login,
-                        child: const Text('Login'),
-                      ),
+                ElevatedButton(
+                  onPressed: _isLoading ? null : _login,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: _isLoading
+                      ? Center(
+                          child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 3,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          ),
+                        )
+                      : const Text('Login'),
+                ),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
