@@ -97,9 +97,20 @@ class _VehicleListingScreenState extends State<VehicleListingScreen> {
               );
             }
 
-            return ListView.builder(
+            final isLandscape =
+                MediaQuery.of(context).orientation == Orientation.landscape;
+
+            return GridView.builder(
               padding: const EdgeInsets.all(8),
               itemCount: cars.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: isLandscape ? 2 : 1,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                childAspectRatio: 1.2, // Give more vertical space to each card
+              ),
+              shrinkWrap: true,
+              physics: const AlwaysScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 final car = cars[index];
                 return CarCard(

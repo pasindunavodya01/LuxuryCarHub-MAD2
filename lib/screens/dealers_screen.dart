@@ -92,13 +92,21 @@ class _DealersScreenState extends State<DealersScreen> {
               );
             }
 
-            return ListView.builder(
+            final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
+            return GridView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: dealers.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: isLandscape ? 2 : 1,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: 2.8, // Adjust for card shape
+              ),
               itemBuilder: (context, index) {
                 final dealer = dealers[index];
                 return Card(
-                  margin: const EdgeInsets.only(bottom: 16),
+                  margin: EdgeInsets.zero,
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Row(
@@ -118,6 +126,7 @@ class _DealersScreenState extends State<DealersScreen> {
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
                                 dealer.name,
