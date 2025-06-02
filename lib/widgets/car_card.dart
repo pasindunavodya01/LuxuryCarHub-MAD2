@@ -65,10 +65,13 @@ class CarCard extends StatelessWidget {
                 Text(
                   'Rs. ${car.price.toStringAsFixed(2)}',
                   style: TextStyle(
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white70 // Light grayish white for dark mode
+                        : Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+
                 const SizedBox(height: 12),
 
                 // View More Button

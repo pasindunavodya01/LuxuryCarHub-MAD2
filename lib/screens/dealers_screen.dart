@@ -92,7 +92,8 @@ class _DealersScreenState extends State<DealersScreen> {
               );
             }
 
-            final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+            final isLandscape =
+                MediaQuery.of(context).orientation == Orientation.landscape;
 
             return GridView.builder(
               padding: const EdgeInsets.all(16),
@@ -139,14 +140,23 @@ class _DealersScreenState extends State<DealersScreen> {
                               Text(dealer.email),
                               if (dealer.phoneNumber.isNotEmpty) ...[
                                 const SizedBox(height: 8),
-                                TextButton.icon(
+                                ElevatedButton.icon(
                                   onPressed: () =>
                                       _makePhoneCall(dealer.phoneNumber),
                                   icon: const Icon(Icons.phone),
                                   label: Text(dealer.phoneNumber),
-                                  style: TextButton.styleFrom(
-                                    padding: EdgeInsets.zero,
-                                    alignment: Alignment.centerLeft,
+                                  style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 8),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    backgroundColor:
+                                        Theme.of(context).primaryColor,
+                                    foregroundColor: Colors.white,
+                                    textStyle: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                    elevation: 2,
                                   ),
                                 ),
                               ],

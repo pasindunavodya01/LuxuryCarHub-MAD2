@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/car.dart';
 
 class CarDetailsScreen extends StatefulWidget {
@@ -16,6 +17,17 @@ class CarDetailsScreen extends StatefulWidget {
 
 class _CarDetailsScreenState extends State<CarDetailsScreen> {
   bool _isDescriptionExpanded = false;
+
+  void _callDealer() async {
+    final uri = Uri.parse('tel:');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not launch dialer')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -175,9 +187,7 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ElevatedButton(
-            onPressed: () {
-              // TODO: Implement contact dealer functionality
-            },
+            onPressed: _callDealer,
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shake_detector/shake_detector.dart';
+import '../screens/support_screen.dart'; // Make sure this file exists and exports a class named SupportScreen
+
 import '../constants/colors.dart';
 import '../models/car.dart';
 import '../models/dealer.dart';
@@ -17,11 +20,57 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late Future<List<Car>> futureCars;
   late Future<List<Dealer>> futureDealers;
+  ShakeDetector? _shakeDetector;
+  bool _supportSnackBarActive = false; // Add this flag
 
   @override
   void initState() {
     super.initState();
     _refreshData();
+
+    _shakeDetector = ShakeDetector.autoStart(
+      onShake: () {
+        if (mounted && !_supportSnackBarActive) {
+          _supportSnackBarActive = true;
+
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+                SnackBar(
+                  backgroundColor: isDark ? Colors.grey[900] : Colors.white,
+                  content: Text(
+                    'Need help?',
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  action: SnackBarAction(
+                    label: 'Contact Support',
+                    textColor:
+                        isDark ? Colors.amber : Theme.of(context).primaryColor,
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const ContactSupportScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  duration: const Duration(seconds: 3),
+                ),
+              )
+              .closed
+              .then((_) {
+            // Wait briefly before resetting flag
+            Future.delayed(const Duration(milliseconds: 1000), () {
+              _supportSnackBarActive = false;
+            });
+          });
+        }
+      },
+    );
   }
 
   void _refreshData() {
@@ -29,6 +78,12 @@ class _HomeScreenState extends State<HomeScreen> {
       futureCars = ApiService.fetchVehicles();
       futureDealers = ApiService.fetchDealers();
     });
+  }
+
+  @override
+  void dispose() {
+    _shakeDetector?.stopListening();
+    super.dispose();
   }
 
   @override
@@ -191,10 +246,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        '\$${car.price.toStringAsFixed(2)}',
+                                        'Rs. ${car.price.toStringAsFixed(2)}',
                                         style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey[800],
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? Colors
+                                                  .white70 // Light grayish white for dark mode
+                                              : Theme.of(context).primaryColor,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ],

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shake_detector/shake_detector.dart';
 import '../models/car.dart';
 import '../services/api_service.dart';
 import '../widgets/car_card.dart';
 import 'car_details_screen.dart';
+import 'support_screen.dart';
 
 class VehicleListingScreen extends StatefulWidget {
   const VehicleListingScreen({super.key});
@@ -14,17 +16,63 @@ class VehicleListingScreen extends StatefulWidget {
 
 class _VehicleListingScreenState extends State<VehicleListingScreen> {
   late Future<List<Car>> futureVehicles;
+  ShakeDetector? _shakeDetector;
+  bool _supportSnackBarActive = false; // Add this flag
 
   @override
   void initState() {
     super.initState();
     futureVehicles = ApiService.fetchVehicles();
+    _shakeDetector = ShakeDetector.autoStart(
+      onShake: () {
+        if (mounted && !_supportSnackBarActive) {
+          _supportSnackBarActive = true; // Set the flag immediately!
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+                SnackBar(
+                  backgroundColor: isDark ? Colors.grey[900] : Colors.white,
+                  content: Text(
+                    'Need help?',
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  action: SnackBarAction(
+                    label: 'Contact Support',
+                    textColor:
+                        isDark ? Colors.amber : Theme.of(context).primaryColor,
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const ContactSupportScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  duration: const Duration(seconds: 3),
+                ),
+              )
+              .closed
+              .then((_) {
+            _supportSnackBarActive = false;
+          });
+        }
+      },
+    );
   }
 
   void _refreshVehicles() {
     setState(() {
       futureVehicles = ApiService.fetchVehicles();
     });
+  }
+
+  @override
+  void dispose() {
+    _shakeDetector?.stopListening();
+    super.dispose();
   }
 
   @override
@@ -80,6 +128,7 @@ class _VehicleListingScreenState extends State<VehicleListingScreen> {
             }
 
             final cars = snapshot.data ?? [];
+            print('Fetched cars: ${cars.length}');
             if (cars.isEmpty) {
               return const Center(
                 child: Column(

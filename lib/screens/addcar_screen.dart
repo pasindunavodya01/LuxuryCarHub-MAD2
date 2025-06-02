@@ -135,10 +135,35 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 _imageFile == null
                     ? const Text('No image selected')
                     : Image.file(_imageFile!, height: 150),
-                ElevatedButton.icon(
-                  onPressed: _isLoading ? null : _pickImage,
-                  icon: const Icon(Icons.photo_library),
-                  label: const Text('Select Image'),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: _isLoading ? null : _pickImage,
+                        icon: const Icon(Icons.photo_library),
+                        label: const Text('Gallery'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: _isLoading
+                            ? null
+                            : () async {
+                                final picked = await _picker.pickImage(
+                                    source: ImageSource.camera);
+                                if (picked != null) {
+                                  setState(
+                                      () => _imageFile = File(picked.path));
+                                }
+                              },
+                        icon: const Icon(Icons.camera_alt),
+                        label: const Text('Camera'),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 _isLoading

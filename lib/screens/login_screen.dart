@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'success_screen.dart';
+import 'package:shake_detector/shake_detector.dart';
+import 'support_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,6 +19,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
+  ShakeDetector? _shakeDetector;
+  bool _supportSnackBarActive = false; // Add this flag
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) {
@@ -67,7 +71,57 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    _shakeDetector = ShakeDetector.autoStart(
+      onShake: () {
+        if (mounted && !_supportSnackBarActive) {
+          _supportSnackBarActive = true;
+
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+                SnackBar(
+                  backgroundColor: isDark ? Colors.grey[900] : Colors.white,
+                  content: Text(
+                    'Need help?',
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  action: SnackBarAction(
+                    label: 'Contact Support',
+                    textColor:
+                        isDark ? Colors.amber : Theme.of(context).primaryColor,
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const ContactSupportScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  duration: const Duration(seconds: 3),
+                ),
+              )
+              .closed
+              .then((_) {
+            // Wait briefly before resetting flag
+            Future.delayed(const Duration(milliseconds: 1000), () {
+              _supportSnackBarActive = false;
+            });
+          });
+        }
+      },
+    );
+  }
+
+  @override
   void dispose() {
+    _shakeDetector?.stopListening();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
