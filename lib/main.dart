@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import 'screens/main_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/profile_screen.dart';
+import 'providers/favorite_provider.dart';
 
 void main() {
-  runApp(const LuxuryCarHubApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => FavoriteProvider(),
+      child: const LuxuryCarHubApp(),
+    ),
+  );
 }
 
 class LuxuryCarHubApp extends StatefulWidget {
