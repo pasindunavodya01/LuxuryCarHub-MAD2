@@ -99,7 +99,10 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
                               .headlineSmall
                               ?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context).primaryColor,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.grey[800],
                               ),
                         ),
                         Text(
