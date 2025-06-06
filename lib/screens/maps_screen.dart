@@ -111,9 +111,12 @@ class _MapsScreenState extends State<MapsScreen> {
                       ),
                       child: Text(
                         dealer.name,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.grey[800]
+                              : Colors.grey[800],
                         ),
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
