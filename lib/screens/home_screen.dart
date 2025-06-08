@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shake_detector/shake_detector.dart';
 import '../screens/support_screen.dart';
-
 import '../constants/colors.dart';
 import '../models/car.dart';
 import '../models/dealer.dart';
