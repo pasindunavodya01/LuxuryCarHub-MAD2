@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   String? _errorMessage;
   ShakeDetector? _shakeDetector;
-  bool _supportSnackBarActive = false; // Add this flag
+  bool _supportSnackBarActive = false;
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) {

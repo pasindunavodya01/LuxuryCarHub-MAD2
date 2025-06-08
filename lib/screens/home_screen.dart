@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shake_detector/shake_detector.dart';
-import '../screens/support_screen.dart'; // Make sure this file exists and exports a class named SupportScreen
+import '../screens/support_screen.dart';
 
 import '../constants/colors.dart';
 import '../models/car.dart';
@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late Future<List<Car>> futureCars;
   late Future<List<Dealer>> futureDealers;
   ShakeDetector? _shakeDetector;
-  bool _supportSnackBarActive = false; // Add this flag
+  bool _supportSnackBarActive = false;
 
   @override
   void initState() {
@@ -250,8 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         style: TextStyle(
                                           color: Theme.of(context).brightness ==
                                                   Brightness.dark
-                                              ? Colors
-                                                  .white70 // Light grayish white for dark mode
+                                              ? Colors.white70
                                               : Theme.of(context).primaryColor,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -320,7 +319,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-              // Dealers List (limit to 6 dealers max)
+              // Dealers List
               SizedBox(
                 height: 160,
                 child: FutureBuilder<List<Dealer>>(

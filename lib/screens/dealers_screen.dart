@@ -102,7 +102,7 @@ class _DealersScreenState extends State<DealersScreen> {
                 crossAxisCount: isLandscape ? 2 : 1,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
-                childAspectRatio: 2.8, // Adjust for card shape
+                childAspectRatio: 2.8,
               ),
               itemBuilder: (context, index) {
                 final dealer = dealers[index];

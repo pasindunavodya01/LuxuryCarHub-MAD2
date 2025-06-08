@@ -79,8 +79,7 @@ class ApiService {
 
       if (response.statusCode == 200) {
         final userData = response.data['user'];
-        final token = response
-            .data['access_token']; // Changed from 'token' to 'access_token'
+        final token = response.data['access_token'];
 
         if (userData != null && token != null) {
           final prefs = await SharedPreferences.getInstance();

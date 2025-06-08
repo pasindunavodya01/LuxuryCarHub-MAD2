@@ -33,7 +33,7 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
   Widget build(BuildContext context) {
     final car = widget.car;
     final description = car.description ?? '';
-    final isLongDescription = description.length > 150; // Customize length
+    final isLongDescription = description.length > 150;
 
     String displayDescription;
     if (!_isDescriptionExpanded && isLongDescription) {
@@ -141,7 +141,7 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
 
                     const SizedBox(height: 24),
 
-                    // Description Section with expandable text
+                    // Description Section
                     if (description.isNotEmpty) ...[
                       const Text(
                         'Description',

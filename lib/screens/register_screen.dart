@@ -17,7 +17,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _phoneController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
-  String _selectedUserType = 'user'; // Default to user role
+  String _selectedUserType = 'user';
 
   @override
   void dispose() {
